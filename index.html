@@ -1,16 +1,391 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <title>Aniverse - Premium Anime Hub</title>
-  </head>
-  <body class="bg-gray-950 text-white font-poppins">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeElysium - Premium Anime Hub</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" defer></script>
+  <style>
+    :root {
+      --primary: #2d0066;
+      --secondary: #0b0118;
+      --accent: #ff2e97;
+      --highlight: #00e5ff;
+      --text: #f0f0f0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0b0118;
+      color: var(--text);
+    }
+    .title-font {
+      font-family: 'Orbitron', sans-serif;
+    }
+    .neon-border {
+      box-shadow: 0 0 5px var(--highlight), 0 0 10px var(--highlight);
+    }
+    .neon-text {
+      text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent);
+    }
+    .blue-neon-text {
+      text-shadow: 0 0 5px var(--highlight), 0 0 10px var(--highlight);
+    }
+    .anime-card {
+      transition: all 0.3s ease;
+    }
+    .anime-card:hover {
+      transform: translateY(-5px);
+    }
+    .gradient-bg {
+      background: linear-gradient(130deg, #2d0066 0%, #0b0118 100%);
+    }
+    .btn-neon {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .btn-neon:hover {
+      box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+    }
+    .forum-thread:hover {
+      background-color: rgba(45, 0, 102, 0.5);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0118;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2d0066;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff2e97;
+    }
+    .hero-carousel {
+      animation: slideAnimation 20s infinite;
+    }
+    @keyframes slideAnimation {
+      0%, 20% { transform: translateX(0); }
+      25%, 45% { transform: translateX(-100%); }
+      50%, 70% { transform: translateX(-200%); }
+      75%, 95% { transform: translateX(-300%); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Notification Badge */
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Mobile Menu Animation */
+    .mobile-menu {
+      transition: transform 0.3s ease-in-out;
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+    .mobile-menu.closed {
+      transform: translateX(-100%);
+    }
+  </style>
+</head>
+<body x-data="{ mobileMenuOpen: false, showSearch: false, activeTab: 'trending', darkMode: true }">
+  <!-- Navigation -->
+  <nav class="relative z-50 border-b border-purple-900">
+    <div class="gradient-bg">
+      <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="mr-2 lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <a href="#" class="flex items-center">
+            <div class="h-10 w-10 rounded-lg bg-purple-700 flex items-center justify-center mr-2">
+              <span class="title-font text-xl font-bold text-white neon-text">AV</span>
+            </div>
+            <h1 class="title-font text-2xl font-bold text-white">Ani<span class="text-pink-500 neon-text">verse</span></h1>
+          </a>
+        </div>
+        
+        <!-- Desktop Menu -->
+        <div class="hidden lg:flex items-center space-x-8">
+          <a href="#" class="font-medium text-white hover:text-pink-400">Home</a>
+          <a href="#" class="font-medium text-white hover:text-pink-400">Anime</a>
+          <a href="#" class="font-medium text-white hover:text-pink-400">News</a>
+          <a href="#" class="font-medium text-white hover:text-pink-400">Forum</a>
+          <a href="#" class="font-medium text-white hover:text-pink-400">Premium</a>
+        </div>
+        
+        <!-- Right Actions -->
+        <div class="flex items-center space-x-4">
+          <button @click="showSearch = !showSearch" class="p-1 rounded-full hover:bg-purple-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+          <button class="p-1 rounded-full hover:bg-purple-800 relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span class="notification-badge">3</span>
+          </button>
+          <button @click="darkMode = !darkMode" class="p-1 rounded-full hover:bg-purple-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+          <a href="#" class="hidden md:block bg-gradient-to-r from-purple-700 to-pink-500 hover:from-purple-600 hover:to-pink-400 text-white font-bold py-2 px-4 rounded-full btn-neon">
+            Sign In
+          </a>
+          <div class="rounded-full h-10 w-10 bg-gray-700 flex items-center justify-center">
+            <img src="/api/placeholder/40/40" alt="User Avatar" class="h-9 w-9 rounded-full">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Search Bar - Toggle -->
+    <div x-show="showSearch" x-transition class="absolute w-full bg-gray-900 border-b border-purple-900">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center">
+          <div class="relative flex-grow">
+            <input type="text" placeholder="Search for anime, forums, news..." class="w-full bg-gray-800 border border-purple-700 rounded-lg py-3 px-4 pr-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            <button class="absolute right-3 top-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </div>
+          <button @click="showSearch = false" class="ml-4 p-2 rounded-full hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <span class="px-3 py-1 bg-purple-900 rounded-full text-sm">Action</span>
+          <span class="px-3 py-1 bg-purple-900 rounded-full text-sm">Fantasy</span>
+          <span class="px-3 py-1 bg-purple-900 rounded-full text-sm">Isekai</span>
+          <span class="px-3 py-1 bg-purple-900 rounded-full text-sm">Shonen</span>
+          <span class="px-3 py-1 bg-purple-900 rounded-full text-sm">Romance</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-80" x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" x-transition>
+    <div class="w-64 h-full bg-gradient-to-b from-purple-900 to-gray-900 p-5 mobile-menu" :class="mobileMenuOpen ? 'open' : 'closed'">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="title-font text-xl font-bold text-white">Menu</h2>
+        <button @click="mobileMenuOpen = false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">Home</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">Anime</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">News</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">Forum</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">Premium</a>
+        <hr class="border-purple-700 my-4">
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">My List</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">History</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">Settings</a>
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-purple-800">Help</a>
+      </div>
+      <div class="absolute bottom-6 left-4 right-4">
+        <a href="#" class="block text-center bg-gradient-to-r from-purple-700 to-pink-500 hover:from-purple-600 hover:to-pink-400 text-white font-bold py-2 px-4 rounded-full btn-neon">
+          Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden" style="height: 500px;">
+      <div class="hero-carousel flex" style="width: 400%;">
+        <!-- Slide 1 -->
+        <div class="relative w-full h-full bg-cover bg-center" style="flex: 1;">
+          <img src="1ani.jpeg" alt="Hero Banner 1" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3">
+            <span class="bg-pink-600 text-white px-2 py-1 rounded text-xs mb-2 inline-block">NEW RELEASE</span>
+            <h2 class="title-font text-4xl md:text-5xl font-bold text-white mb-2">Cyber Samurai Chronicles</h2>
+            <p class="text-gray-200 mb-4 max-w-lg">In 2089, a lone samurai with cybernetic enhancements fights against corrupt AI corporations controlling Neo-Tokyo.</p>
+            <div class="flex space-x-3">
+              <button class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full btn-neon flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                Watch Now
+              </button>
+              <button class="border border-white hover:bg-white hover:bg-opacity-20 text-white font-bold py-2 px-6 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                </svg>
+                Add to List
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Slide 2 -->
+        <div class="relative w-full h-full bg-cover bg-center" style="flex: 1;">
+          <img src="2.ani.jpeg" alt="Hero Banner 2" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3">
+            <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs mb-2 inline-block">EXCLUSIVE</span>
+            <h2 class="title-font text-4xl md:text-5xl font-bold text-white mb-2">Elysium Champions</h2>
+            <p class="text-gray-200 mb-4 max-w-lg">The most anticipated tournament arc continues as eight champions battle for the ultimate prize.</p>
+            <div class="flex space-x-3">
+              <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full btn-neon flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                Watch Now
+              </button>
+              <button class="border border-white hover:bg-white hover:bg-opacity-20 text-white font-bold py-2 px-6 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                </svg>
+                Add to List
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="relative w-full h-full bg-cover bg-center" style="flex: 1;">
+          <img src="3.ani.jpeg" alt="Hero Banner 3" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3">
+            <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs mb-2 inline-block">TRENDING</span>
+            <h2 class="title-font text-4xl md:text-5xl font-bold text-white mb-2">Astral Voyagers</h2>
+            <p class="text-gray-200 mb-4 max-w-lg">A crew of young psychics navigates parallel dimensions in search of their lost home world.</p>
+            <div class="flex space-x-3">
+              <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full btn-neon flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                Watch Now
+              </button>
+              <button class="border border-white hover:bg-white hover:bg-opacity-20 text-white font-bold py-2 px-6 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                </svg>
+                Add to List
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Slide 4 -->
+        <div class="relative w-full h-full bg-cover bg-center" style="flex: 1;">
+          <img src="4.ani.jpeg" alt="Hero Banner 4" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3">
+            <span class="bg-green-600 text-white px-2 py-1 rounded text-xs mb-2 inline-block">COMING SOON</span>
+            <h2 class="title-font text-4xl md:text-5xl font-bold text-white mb-2">Garden of Eternity</h2>
+            <p class="text-gray-200 mb-4 max-w-lg">An amnesiac girl discovers she can control plants and must uncover her past to save a dying world.</p>
+            <div class="flex space-x-3">
+              <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full btn-neon flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                Watch Trailer
+              </button>
+              <button class="border border-white hover:bg-white hover:bg-opacity-20 text-white font-bold py-2 px-6 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                Notify Me
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hero Nav Dots -->
+      <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+        <button class="w-3 h-3 rounded-full bg-white bg-opacity-100"></button>
+        <button class="w-3 h-3 rounded-full bg-white bg-opacity-50"></button>
+        <button class="w-3 h-3 rounded-full bg-white bg-opacity-50"></button>
+        <button class="w-3 h-3 rounded-full bg-white bg-opacity-50"></button>
+      </div>
+    </section>
+    
+    <!-- Content Tabs -->
+    <section class="container mx-auto px-4 py-8">
+      <div class="flex border-b border-purple-900 mb-8 overflow-x-auto pb-2 scrollbar-none">
+        <button @click="activeTab = 'trending'" :class="{'border-b-2 border-pink-500 text-pink-500': activeTab === 'trending'}" class="px-4 py-2 font-medium whitespace-nowrap">Trending Now</button>
+        <button @click="activeTab = 'latest'" :class="{'border-b-2 border-pink-500 text-pink-500': activeTab === 'latest'}" class="px-4 py-2 font-medium whitespace-nowrap">Latest Episodes</button>
+        <button @click="activeTab = 'picks'" :class="{'border-b-2 border-pink-500 text-pink-500': activeTab === 'picks'}" class="px-4 py-2 font-medium whitespace-nowrap">Elysium Picks</button>
+        <button @click="activeTab = 'upcoming'" :class="{'border-b-2 border-pink-500 text-pink-500': activeTab === 'upcoming'}" class="px-4 py-2 font-medium whitespace-nowrap">Upcoming</button>
+        <button @click="activeTab = 'seasonal'" :class="{'border-b-2 border-pink-500 text-pink-500': activeTab === 'seasonal'}" class="px-4 py-2 font-medium whitespace-nowrap">Spring 2025 Anime</button>
+      </div>
+      
+      <!-- Trending Anime Grid -->
+      <div x-show="activeTab === 'trending'" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        <!-- Anime Card 1 -->
+        <div class="anime-card bg-gray-900 rounded-lg overflow-hidden relative group">
+          <img src="ağlayan yüz.png" alt="Anime Title" class="w-full object-cover h-64">
+          <div class="absolute top-2 right-2 bg-pink-600 rounded-full h-8 w-8 flex items-center justify-center">
+            <span class="text-xs font-bold">9.2</span>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end">
+            <div class="p-3">
+              <div class="flex space-x-2 mb-2">
+                <span class="bg-purple-900 text-xs px-2 py-1 rounded">Action</span>
+                <span class="bg-purple-900 text-xs px-2 py-1 rounded">Sci-Fi</span>
+              </div>
+              <button class="bg-pink-600 hover:bg-pink-700 text-white text-sm py-1 px-3 rounded-full w-full">Watch Now</button>
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="font-bold text-white">Cyber Samurai Chronicles</h3>
+            <p class="text-gray-400 text-sm">24 Episodes</p>
+          </div>
+        </div>
+        
+        <!-- Anime Card 2 -->
+        <div class="anime-card bg-gray-900 rounded-lg overflow-hidden relative group">
+          <img src="gülen yüz.png" alt="Anime Title" class="w-full object-cover h-64">
+          <div class="absolute top-2 right-2 bg-pink-600 rounded-full h-8 w-8 flex items-center justify-center">
+            <span class="text-xs font-bold">8.7</span>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end">
+            <div class="p-3">
+              <div class="flex space-x-2 mb-2">
+                <span class="bg-purple-900 text-xs px-2 py-1 rounded">Fantasy</span>
+                <span class="bg-purple-900 text-xs px-2 py-1 rounded">Adventure</span>
+              </div>
+              <button class="bg-pink-600 hover:bg-pink-700 text-white text-sm py-1 px-3 rounded-full w-full">Watch Now</button>
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="font-bold text-white">Astral Voyagers</h3>
+            <p class="text-gray-400 text-sm">12 Episodes</p>
+          </div>
+        
